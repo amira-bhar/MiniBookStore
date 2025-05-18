@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container my-5">
+
+    <h2 class="mb-4 text-primary fw-bold">[[#{cart.title}]]</h2>
+
+    <div th:if="${#lists.isEmpty(items)}" class="alert alert-info rounded-pill text-center py-3 fs-5">
+        [[#{cart.empty}]]
+    </div>
+
+    <div th:if="${!#lists.isEmpty(items)}" class="d-flex flex-column gap-4">
+
+        <!-- Liste des livres -->
+        <div th:each="book : ${items}" class="card shadow-sm p-3 rounded-4 d-flex flex-row align-items-center" style="background: #e3f2fd;">
+
+            <img th:src="@{|/images/${book.imageUrl}|}" alt="[[${book.title}]]" class="rounded-3" style="width: 100px; height: auto; object-fit: cover;">
+
+            <div class="ms-4 flex-grow-1">
+                <h5 class="mb-1 text-primary fw-semibold">[[${book.title}]]</h5>
+                <p class="mb-1 text-secondary fst-italic">[[#{books.author}]] [[${book.author}]]</p>
+                <p class="mb-0 fw-bold fs-5 text-success">$[[${book.price}]]</p>
+            </div>
+
+            <form th:action="@{/cart/{id}/remove(id=${book.id})}" method="post" style="margin-left: 20px;">
+                <button type="submit" class="btn btn-outline-danger rounded-pill px-4 py-2 shadow-sm">
+                    [[#{cart.remove}]]
+                </button>
+            </form>
+
+        </div>
+
+        <!-- Total et actions -->
+        <div class="card p-4 rounded-4 shadow-sm d-flex flex-column align-items-center" style="background: #bbdefb;">
+            <div class="fs-4 fw-bold mb-3 text-primary">
+                [[#{cart.total}]]: <span class="text-success">$[[${total}]]</span>
+            </div>
+
+            <div class="d-flex gap-3">
+                <form th:action="@{/cart/clear}" method="post">
+                    <button type="submit" class="btn btn-warning rounded-pill px-4 py-2 shadow-sm">
+                        [[#{cart.clear}]]
+                    </button>
+                </form>
+
+                <a href="/books" class="btn btn-secondary rounded-pill px-4 py-2 shadow-sm">
+                    [[#{cart.continue}]]
+                </a>
+
+                <form th:action="@{/order/create}" method="post">
+                    <button type="submit" class="btn btn-success rounded-pill px-4 py-2 shadow-sm">
+                        [[#{cart.checkout}]]
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>
